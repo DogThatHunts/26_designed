@@ -56,6 +56,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 18px 40px;
+    padding-top: max(18px, env(safe-area-inset-top));
     z-index: 50;
     background: rgba(13,13,13,0.92);
     backdrop-filter: blur(8px);
@@ -71,23 +72,40 @@
     color: var(--gold);
   }
 
-  .nav-controls {
+  .nav-left {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 16px;
   }
 
-  .nav-prev-next {
+  .nav-file-ops {
     display: flex;
-    gap: 8px;
     align-items: center;
-    margin-left: 8px;
+    gap: 6px;
+    padding-left: 16px;
+    border-left: 1px solid #2A2520;
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   .section-indicator {
     font-size: 11px;
     color: var(--muted);
     letter-spacing: 0.1em;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .nav-nav-btns {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    padding-left: 12px;
+    border-left: 1px solid #2A2520;
   }
 
   .nav-btn {
@@ -568,13 +586,15 @@
     textarea, input[type="text"] { font-size: 16px; }
     * { -webkit-tap-highlight-color: transparent; }
 
-    nav { padding: 12px 16px; }
+    nav { padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top)); }
     .nav-title { font-size: 11px; }
     .section-indicator { display: none; }
-    .nav-prev-next { display: none; }
+    .nav-nav-btns { display: none; }
+    .nav-file-ops { display: none; }
+    #save-dot { display: none; }
 
-    .section { padding: 72px 16px 84px; }
-    .intro-hero { padding: 72px 16px 80px; }
+    .section { padding: max(88px, calc(env(safe-area-inset-top) + 60px)) 16px 84px; }
+    .intro-hero { padding: max(88px, calc(env(safe-area-inset-top) + 60px)) 16px 80px; }
 
     #bottom-nav {
       display: flex;
@@ -586,7 +606,7 @@
       z-index: 50;
       align-items: center;
       padding: 10px 16px;
-      gap: 10px;
+      gap: 8px;
       padding-bottom: max(12px, env(safe-area-inset-bottom));
     }
     #bottom-nav-label {
@@ -618,8 +638,36 @@
     }
     .bottom-nav-btn:disabled { opacity: 0.2; }
     .bottom-nav-btn:not(:disabled):active { border-color: var(--gold); color: var(--gold); }
-
-    .nav-btn, .nav-btn-gold { min-height: 40px; padding: 0 14px; }
+    .bottom-file-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--cream-dim);
+      height: 44px;
+      padding: 0 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .bottom-file-btn:active { border-color: var(--gold); color: var(--gold); }
+    .bottom-file-btn-gold {
+      background: var(--gold);
+      border: 1px solid var(--gold);
+      color: var(--ink);
+      height: 44px;
+      padding: 0 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
 
     .two-col, .three-col { grid-template-columns: 1fr; }
     .seq-items { grid-template-columns: 1fr 1fr; }
@@ -653,17 +701,21 @@
 <div id="progress-bar" style="width: 0%"></div>
 
 <nav>
-  <div class="nav-title">2026: Designed</div>
-  <div class="nav-controls">
+  <div class="nav-left">
+    <div class="nav-title">2026: Designed</div>
+    <div class="nav-file-ops">
+      <span id="save-dot" title="Auto-saved"></span>
+      <button class="nav-btn" onclick="loadFile()">Load</button>
+      <button class="nav-btn-gold" onclick="saveFile()">Save</button>
+      <input type="file" id="load-input" accept=".json" onchange="handleLoad(event)">
+    </div>
+  </div>
+  <div class="nav-right">
     <span class="section-indicator" id="section-indicator">—</span>
-    <span id="save-dot" title="Auto-saved"></span>
-    <button class="nav-btn" onclick="loadFile()">Load</button>
-    <button class="nav-btn-gold" onclick="saveFile()">Save</button>
-    <input type="file" id="load-input" accept=".json" onchange="handleLoad(event)">
-    <span class="nav-prev-next">
+    <div class="nav-nav-btns">
       <button class="nav-btn" id="prev-btn" onclick="navigate(-1)" disabled>← Prev</button>
       <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next →</button>
-    </span>
+    </div>
   </div>
 </nav>
 
@@ -671,6 +723,8 @@
 <div id="bottom-nav">
   <button class="bottom-nav-btn" id="prev-btn-m" onclick="navigate(-1)" disabled>&#8592;</button>
   <span id="bottom-nav-label">Introduction</span>
+  <button class="bottom-file-btn" onclick="loadFile()">Load</button>
+  <button class="bottom-file-btn-gold" onclick="saveFile()">Save</button>
   <button class="bottom-nav-btn" id="next-btn-m" onclick="navigate(1)">&#8594;</button>
 </div>
 
